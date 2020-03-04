@@ -8,7 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
     @PostMapping("/login")
-    public Response login() {
-        return
+    public Response login(String userName, String password) {
+
+        return new Response();
     }
 }
