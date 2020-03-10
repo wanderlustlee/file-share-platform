@@ -1,4 +1,4 @@
-package com.ncu.xzx.Utils;
+package com.ncu.xzx.utils;
 
 public enum ResponseCode {
 
