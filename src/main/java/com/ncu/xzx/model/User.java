@@ -7,8 +7,6 @@ import lombok.Setter;
 import java.util.Date;
 
 @Data
-@Setter
-@Getter
 public class User {
     private int id;
     private String userName;

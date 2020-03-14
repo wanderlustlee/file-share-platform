@@ -8,7 +8,7 @@
         SELECT * from User where userName = #{userName} and password = #{password}
     </select>
 
-    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.User">
         insert into user (userName, password) values
         (#{userName},#{password})
     </insert>

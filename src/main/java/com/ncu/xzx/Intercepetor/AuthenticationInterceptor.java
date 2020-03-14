@@ -6,7 +6,9 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.ncu.xzx.model.User;
+import com.ncu.xzx.model.UserToken;
 import com.ncu.xzx.service.UserService;
+import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.PassToken;
 import com.ncu.xzx.utils.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,19 +20,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Method;
 
-public class AuthenticationInterceptor  implements HandlerInterceptor {
+public class AuthenticationInterceptor implements HandlerInterceptor {
     @Autowired
     UserService userService;
+    @Autowired
+    UserTokenService userTokenService;
+
     @Override
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object object) throws Exception {
         String token = httpServletRequest.getParameter("token");// 从 http 请求头中取出 token
-        System.out.println(httpServletRequest);
         // 如果不是映射到方法直接通过
-        if(!(object instanceof HandlerMethod)){
+        if (!(object instanceof HandlerMethod)) {
             return true;
         }
-        HandlerMethod handlerMethod=(HandlerMethod)object;
-        Method method=handlerMethod.getMethod();
+        HandlerMethod handlerMethod = (HandlerMethod) object;
+        Method method = handlerMethod.getMethod();
         //检查是否有passtoken注释，有则跳过认证
         if (method.isAnnotationPresent(PassToken.class)) {
             PassToken passToken = method.getAnnotation(PassToken.class);
@@ -54,6 +58,8 @@ public class AuthenticationInterceptor  implements HandlerInterceptor {
                     throw new RuntimeException("401");
                 }
                 User user = userService.getUserById(Integer.valueOf(userId));
+//                UserToken userToken = userTokenService.getByToken(token);
+
                 if (user == null) {
                     throw new RuntimeException("用户不存在，请重新登录");
                 }
@@ -76,6 +82,7 @@ public class AuthenticationInterceptor  implements HandlerInterceptor {
                            Object o, ModelAndView modelAndView) throws Exception {
 
     }
+
     @Override
     public void afterCompletion(HttpServletRequest httpServletRequest,
                                 HttpServletResponse httpServletResponse,
