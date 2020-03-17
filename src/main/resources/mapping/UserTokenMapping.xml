@@ -8,7 +8,7 @@
         SELECT * from userToken where token = #{token} order by id desc limit 1
     </select>
 
-    <insert id="addUserToken" parameterType="com.ncu.xzx.model.UserToken">
+    <insert id="addUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.UserToken">
         insert into userToken (userId, token) values (#{userId}, #{token})
     </insert>
 
