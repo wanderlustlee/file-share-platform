@@ -5,6 +5,8 @@ import com.ncu.xzx.model.UserToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class UserTokenServiceImpl implements UserTokenService{
 
@@ -18,6 +20,10 @@ public class UserTokenServiceImpl implements UserTokenService{
 
     @Override
     public int addUserToken(int userId, String token) {
-        return userTokenMapper.addUserToken(userId, token);
+        UserToken userToken = new UserToken();
+        userToken.setUserId(userId);
+        userToken.setToken(token);
+        userToken.setCreateTime(new Date());
+        return userTokenMapper.addUserToken(userToken);
     }
 }

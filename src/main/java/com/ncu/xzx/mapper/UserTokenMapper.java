@@ -9,5 +9,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface UserTokenMapper {
     UserToken getByToken(String token);
 
-    int addUserToken(int userId, String token);
+    int addUserToken(UserToken userToken);
 }

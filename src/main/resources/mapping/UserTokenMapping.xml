@@ -5,11 +5,11 @@
 
 <mapper namespace="com.ncu.xzx.mapper.UserTokenMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
     <select id="getByToken" resultType="com.ncu.xzx.model.UserToken">
-        SELECT * from userToken where token = #{token} order by id desc limit 1
+        SELECT * from userToken where `token` = #{token} order by id desc limit 1
     </select>
 
     <insert id="addUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.UserToken">
-        insert into userToken (userId, token) values (#{userId}, #{token})
+        insert into userToken (`userId`, `token`, `createTime`) values (#{userId}, #{token}, #{createTime})
     </insert>
 
 </mapper>
