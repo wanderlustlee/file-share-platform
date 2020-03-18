@@ -8,8 +8,12 @@
         SELECT * from file where userId = #{userId}
     </select>
 
-    <insert id="addFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileVo">
-        insert into file (userId, fileName, filePath, createTime) values (#{userId}, #{fileName}, #{filePath}, #{createTime})
+    <insert id="uploadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileVo">
+        insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'upload', #{fileName}, #{filePath}, #{createTime})
+    </insert>
+
+    <insert id="downloadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileVo">
+        insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'download', #{fileName}, #{filePath}, #{createTime})
     </insert>
 
 </mapper>

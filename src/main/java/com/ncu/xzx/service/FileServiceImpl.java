@@ -10,8 +10,14 @@ public class FileServiceImpl implements FileService{
 
     @Autowired
     FileMapper fileMapper;
+
     @Override
     public int upload(FileVo file) {
-        return fileMapper.addFile(file);
+        return fileMapper.uploadFile(file);
+    }
+
+    @Override
+    public int download(FileVo file) {
+        return fileMapper.downloadFile(file);
     }
 }

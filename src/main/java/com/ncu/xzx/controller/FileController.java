@@ -3,6 +3,7 @@ package com.ncu.xzx.controller;
 import com.ncu.xzx.model.FileVo;
 import com.ncu.xzx.model.UserToken;
 import com.ncu.xzx.service.FileService;
+import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
@@ -27,6 +28,9 @@ public class FileController {
 
     @Autowired
     FileService fileService;
+
+    @Autowired
+    UserLoadService userLoadService;
 
     public static String PATH = "/Users/vivo/upload";
 
@@ -68,6 +72,7 @@ public class FileController {
         int result = fileService.upload(fileObject);
 
         if (result > 0) {
+            userLoadService.insertOrUpdateUserLoad(userId, "upload");
             return new Response("");
         }
 
@@ -78,6 +83,8 @@ public class FileController {
     @GetMapping("/download")
     @UserLoginToken
     public Response download(@RequestParam("token") String token, @RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) {
+        UserToken userToken = userTokenService.getByToken(token);
+        int userId = userToken.getUserId();
         //得到要下载的文件, linux为/  Windows为\\
         File file = new File(PATH + File.separator + fileName);
         //如果文件不存在
@@ -109,6 +116,18 @@ public class FileController {
             out.close();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        FileVo fileObject = new FileVo();
+        fileObject.setUserId(userId);
+        fileObject.setFileName(fileName);
+        fileObject.setFilePath(PATH + fileName);
+        fileObject.setCreateTime(new Date());
+
+        int result = fileService.download(fileObject);
+
+        if (result > 0) {
+            userLoadService.insertOrUpdateUserLoad(userId, "download");
+            return new Response("");
         }
 
         return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");

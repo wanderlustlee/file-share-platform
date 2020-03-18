@@ -5,5 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface FileMapper {
-    int addFile(FileVo file);
+    int uploadFile(FileVo file);
+    int downloadFile(FileVo file);
 }

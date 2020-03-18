@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncu.xzx.mapper.UserLoadMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
+    <select id="getByUserId" resultType="com.ncu.xzx.model.UserLoad">
+        SELECT * from userLoad where `userId` = #{userId}
+    </select>
+
+    <insert id="addUserLoad" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.UserLoad">
+        insert into userLoad (`userId`, `uploadTimes`, `downloadTimes`, `createTime`) values (#{userId}, 0, 0, #{createTime})
+    </insert>
+
+    <update id="updateUploadTimes" parameterType="int">
+        update userLoad set `uploadTimes` = `uploadTimes` + 1 where `userId` = #{userId}
+    </update>
+
+    <update id="updateDownloadTimes" parameterType="int">
+        update userLoad set `downloadTimes` = `downloadTimes` + 1 where `userId` = #{userId}
+    </update>
+
+</mapper>

@@ -9,12 +9,11 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FileVo {
+public class UserLoad {
     private int id;
     private int userId;
-    private String operateType;
-    private String fileName;
-    private String filePath;
+    private int uploadTimes;
+    private int downloadTimes;
     private Date createTime;
     private Date updateTime;
 }
