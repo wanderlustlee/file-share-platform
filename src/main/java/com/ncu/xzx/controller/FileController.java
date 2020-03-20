@@ -39,14 +39,13 @@ public class FileController {
 
     /**
      * 上传
-     * @param token
      * @param file
      * @return
      */
     @PostMapping("/upload")
     @UserLoginToken
-    public Response upload(@RequestParam("token") String token, @RequestParam("file") MultipartFile file) {
-
+    public Response upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
         UserToken userToken = userTokenService.getByToken(token);
         int userId = userToken.getUserId();
 
@@ -88,18 +87,40 @@ public class FileController {
     }
 
     /**
+     * 获取下载链接
+     * @param fileName
+     * @param request
+     * @param response
+     * @return
+     */
+    @GetMapping("/download-url")
+    @UserLoginToken
+    public Response downloadUrl(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) {
+        String token = request.getHeader("Authorization");
+        UserToken userToken = userTokenService.getByToken(token);
+        int userId = userToken.getUserId();
+        userLoadService.insertOrUpdateUserLoad(userId, "download");
+
+        FileVo fileObject = new FileVo();
+        fileObject.setUserId(userId);
+        fileObject.setFileName(fileName);
+        fileObject.setFilePath(PATH + fileName);
+        fileObject.setCreateTime(new Date());
+
+        fileService.download(fileObject);
+        return new Response("/download/" + fileName);
+
+    }
+
+    /**
      * 下载
      * @param fileName
-     * @param token
      * @param request
      * @param response
      * @return
      */
     @GetMapping("/download/{fileName}")
-    @UserLoginToken
-    public Response download(@PathVariable String fileName, @RequestParam("token") String token, HttpServletRequest request, HttpServletResponse response) {
-        UserToken userToken = userTokenService.getByToken(token);
-        int userId = userToken.getUserId();
+    public Response download(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response) {
         //得到要下载的文件, linux为/  Windows为\\
         File file = new File(PATH + File.separator + fileName);
         //如果文件不存在
@@ -131,20 +152,8 @@ public class FileController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        FileVo fileObject = new FileVo();
-        fileObject.setUserId(userId);
-        fileObject.setFileName(fileName);
-        fileObject.setFilePath(PATH + fileName);
-        fileObject.setCreateTime(new Date());
 
-        int result = fileService.download(fileObject);
-
-        if (result > 0) {
-            userLoadService.insertOrUpdateUserLoad(userId, "download");
-            return new Response("");
-        }
-
-        return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
+        return new Response("");
 
     }
 
@@ -200,5 +209,11 @@ public class FileController {
 
         return new Response("");
 
+    }
+
+    @GetMapping("list")
+    @UserLoginToken
+    public Response getFileList() {
+        return new Response(fileService.getFileList());
     }
 }

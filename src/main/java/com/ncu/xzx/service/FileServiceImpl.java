@@ -5,6 +5,8 @@ import com.ncu.xzx.model.FileVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FileServiceImpl implements FileService{
 
@@ -19,5 +21,10 @@ public class FileServiceImpl implements FileService{
     @Override
     public int download(FileVo file) {
         return fileMapper.downloadFile(file);
+    }
+
+    @Override
+    public List<FileVo> getFileList() {
+        return fileMapper.getAllFiles();
     }
 }
