@@ -9,4 +9,6 @@ public interface UserService {
     int register(User user);
 
     User getUserById(int id);
+
+    User getUserByUserName(String userName);
 }

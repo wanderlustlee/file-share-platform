@@ -5,16 +5,20 @@
 
 <mapper namespace="com.ncu.xzx.mapper.UserMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
     <select id="selectByUserNameAndPassword" resultType="com.ncu.xzx.model.User">
-        SELECT * from User where userName = #{userName} and password = #{password}
+        SELECT * from User where `userName` = #{userName} and `password` = #{password}
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.User">
-        insert into user (userName, password) values
+        insert into user (`userName`, `password`) values
         (#{userName},#{password})
     </insert>
 
     <select id="getUserById" resultType="com.ncu.xzx.model.User">
-        select * from user where id = #{id}
+        select * from user where `id` = #{id}
+    </select>
+
+    <select id="getUserByUserName" resultType="com.ncu.xzx.model.User">
+        select * from user where `userName` = #{userName}
     </select>
 
 </mapper>

@@ -6,18 +6,12 @@ import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
-import com.ncu.xzx.utils.PassToken;
-import com.ncu.xzx.utils.Response;
-import com.ncu.xzx.utils.TokenUtil;
-import com.ncu.xzx.utils.UserLoginToken;
+import com.ncu.xzx.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -50,12 +44,19 @@ public class UserController {
         User user = userService.login(userName, password);
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
-        return new Response(true);
+        return new Response(token);
     }
 
     @PassToken
     @PostMapping("/register")
     public Response register(String userName, String password) {
+        if (userName == null || password == null){
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "字段为空");
+        }
+        User validateUser = userService.getUserByUserName(userName);
+        if (validateUser != null) {
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名已被占用");
+        }
         User user = new User();
         user.setUserName(userName);
         user.setPassword(password);
@@ -65,7 +66,7 @@ public class UserController {
             userTokenService.addUserToken(user.getId(), token);
             return new Response(true);
         }
-        return new Response(false);
+        return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
     }
 
     @PassToken
@@ -95,5 +96,14 @@ public class UserController {
         List<FileVo> fileVoList= fileService.getByUserId(userId);
         List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
         return new Response(fileDtoList);
+    }
+
+    @GetMapping("/validate")
+    public Response validateUserName(@RequestParam("userName") String userName) {
+        User user = userService.getUserByUserName(userName);
+        if (user == null) {
+            return new Response(true);
+        }
+        return new Response(false);
     }
 }
