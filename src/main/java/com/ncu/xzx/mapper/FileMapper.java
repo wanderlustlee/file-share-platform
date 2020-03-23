@@ -13,4 +13,8 @@ public interface FileMapper {
     int downloadFile(FileVo file);
 
     List<FileVo> getAllFiles();
+
+    List<FileVo> getByFileName(String fileName);
+
+    List<FileVo> getByUserId(int userId);
 }

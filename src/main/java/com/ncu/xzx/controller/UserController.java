@@ -1,8 +1,9 @@
 package com.ncu.xzx.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.ncu.xzx.model.Role;
-import com.ncu.xzx.model.User;
+import com.ncu.xzx.model.*;
+import com.ncu.xzx.service.FileService;
+import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.PassToken;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -29,6 +31,12 @@ public class UserController {
 
     @Autowired
     UserTokenService userTokenService;
+
+    @Autowired
+    UserLoadService userLoadService;
+
+    @Autowired
+    FileService fileService;
 
     @Autowired
     RedisTemplate redisTemplate; //默认提供的用来操作对象的redis操作实例
@@ -76,5 +84,16 @@ public class UserController {
         role.setRoles(Arrays.asList(roles));
         role.setIntroduce("test");
         return new Response(role);
+    }
+
+    @GetMapping("/load-history")
+    @UserLoginToken
+    public Response getUserLoadHistory(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        UserToken userToken = userTokenService.getByToken(token);
+        int userId = userToken.getUserId();
+        List<FileVo> fileVoList= fileService.getByUserId(userId);
+        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
+        return new Response(fileDtoList);
     }
 }

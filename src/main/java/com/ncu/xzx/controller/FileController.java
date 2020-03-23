@@ -1,13 +1,17 @@
 package com.ncu.xzx.controller;
 
+import com.ncu.xzx.model.FileDto;
 import com.ncu.xzx.model.FileVo;
+import com.ncu.xzx.model.User;
 import com.ncu.xzx.model.UserToken;
 import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
+import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
 import com.ncu.xzx.utils.UserLoginToken;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +23,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.Date;
+import java.util.*;
 
 @RestController
 @RequestMapping("/file")
@@ -32,6 +37,9 @@ public class FileController {
 
     @Autowired
     UserLoadService userLoadService;
+
+    @Autowired
+    UserService userService;
 
     public static String PATH = "/Users/vivo/upload";
 
@@ -108,7 +116,7 @@ public class FileController {
         fileObject.setCreateTime(new Date());
 
         fileService.download(fileObject);
-        return new Response("/download/" + fileName);
+        return new Response("/file/download/" + fileName);
 
     }
 
@@ -211,9 +219,30 @@ public class FileController {
 
     }
 
-    @GetMapping("list")
+    /**
+     * 获取所有文件
+     * @return
+     */
+    @GetMapping("/list")
     @UserLoginToken
     public Response getFileList() {
-        return new Response(fileService.getFileList());
+        List<FileVo> fileVoList = fileService.getFileList();
+        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
+        return new Response(fileDtoList);
     }
+
+    /**
+     * 按照文件名模糊查询
+     * @param fileName
+     * @return
+     */
+    @RequestMapping("/query")
+    @UserLoginToken
+    public Response getByFileName(@RequestParam("fileName") String fileName) {
+        new ArrayList<>();
+        List<FileVo> fileVoList = fileService.getByFileName(fileName);
+        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
+        return new Response(fileDtoList);
+    }
+
 }

@@ -8,6 +8,10 @@
         SELECT * from file where userId = #{userId}
     </select>
 
+    <select id="getByFileName" resultType="com.ncu.xzx.model.FileVo">
+        SELECT * from file where fileName like CONCAT(CONCAT('%', #{fileName}), '%');
+    </select>
+
     <select id="getAllFiles" resultType="com.ncu.xzx.model.FileVo">
         select * from file where `operateType` = "upload"
     </select>
