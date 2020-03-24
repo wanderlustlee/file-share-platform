@@ -225,7 +225,7 @@ public class FileController {
     public Response getFileList(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize) {
         int offset = (pageIndex - 1) * pageSize;
         List<FileDo> fileDoList = fileService.getFileList(offset, pageSize);
-        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        List<FileVo> fileVoList = fileService.FileDoToFileVo(fileDoList);
         int count = fileService.countAllFiles();
         FileDto fileDto = new FileDto();
         fileDto.setFileVoList(fileVoList);
@@ -243,7 +243,7 @@ public class FileController {
     public Response getByFileName(@RequestParam("fileName") String fileName) {
         new ArrayList<>();
         List<FileDo> fileDoList = fileService.getByFileName(fileName);
-        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        List<FileVo> fileVoList = fileService.FileDoToFileVo(fileDoList);
         return new Response(fileVoList);
     }
 

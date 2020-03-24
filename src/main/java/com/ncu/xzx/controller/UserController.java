@@ -96,7 +96,7 @@ public class UserController {
         UserToken userToken = userTokenService.getByToken(token);
         int userId = userToken.getUserId();
         List<FileDo> fileDoList = fileService.getByUserId(userId);
-        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        List<FileVo> fileVoList = fileService.FileDoToFileVo(fileDoList);
         return new Response(fileVoList);
     }
 

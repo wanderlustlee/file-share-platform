@@ -16,7 +16,7 @@ public interface FileService {
 
     List<FileDo> getByUserId(int userId);
 
-    List<FileVo> FileVoToFileDto(List<FileDo> fileDoList);
+    List<FileVo> FileDoToFileVo(List<FileDo> fileDoList);
 
     int countAllFiles();
 }

@@ -48,20 +48,20 @@ public class FileServiceImpl implements FileService{
     }
 
     @Override
-    public List<FileVo> FileVoToFileDto(List<FileDo> fileDoList) {
+    public List<FileVo> FileDoToFileVo(List<FileDo> fileDoList) {
         List<FileVo> fileVoList = new ArrayList<>();
-        fileDoList.forEach(fileVo -> {
-            FileVo fileDto = new FileVo();
-            BeanUtils.copyProperties(fileVo, fileDto);
+        fileDoList.forEach(FileDo -> {
+            FileVo FileVo = new FileVo();
+            BeanUtils.copyProperties(FileDo, FileVo);
             // 转换时间为字符串
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String createTime = format.format(fileVo.getCreateTime());
-            fileDto.setCreateTime(createTime);
-            User user = userMapper.getUserById(fileVo.getUserId());
+            String createTime = format.format(FileDo.getCreateTime());
+            FileVo.setCreateTime(createTime);
+            User user = userMapper.getUserById(FileDo.getUserId());
             if (user != null) {
-                fileDto.setUserName(user.getUserName());
+                FileVo.setUserName(user.getUserName());
             }
-            fileVoList.add(fileDto);
+            fileVoList.add(FileVo);
         });
         return fileVoList;
     }
