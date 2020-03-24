@@ -3,20 +3,13 @@ package com.ncu.xzx.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import java.util.Date;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 public class FileDto {
-    private int id;
-    private int userId;
-    private String userName;
-    private String operateType;
-    private String fileName;
-    private String filePath;
-    private String createTime;
+    private List<FileVo> fileVoList;
+    private int count;
 }

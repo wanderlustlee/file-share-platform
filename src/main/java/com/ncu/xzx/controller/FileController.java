@@ -2,7 +2,7 @@ package com.ncu.xzx.controller;
 
 import com.ncu.xzx.model.FileDto;
 import com.ncu.xzx.model.FileVo;
-import com.ncu.xzx.model.User;
+import com.ncu.xzx.model.FileDo;
 import com.ncu.xzx.model.UserToken;
 import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
@@ -11,7 +11,6 @@ import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
 import com.ncu.xzx.utils.UserLoginToken;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.Date;
 import java.util.*;
 
@@ -77,7 +74,7 @@ public class FileController {
             e.printStackTrace();
         }
 
-        FileVo fileObject = new FileVo();
+        FileDo fileObject = new FileDo();
         fileObject.setUserId(userId);
         fileObject.setFileName(fileName);
         fileObject.setFilePath(PATH + fileName);
@@ -109,7 +106,7 @@ public class FileController {
         int userId = userToken.getUserId();
         userLoadService.insertOrUpdateUserLoad(userId, "download");
 
-        FileVo fileObject = new FileVo();
+        FileDo fileObject = new FileDo();
         fileObject.setUserId(userId);
         fileObject.setFileName(fileName);
         fileObject.setFilePath(PATH + fileName);
@@ -225,10 +222,15 @@ public class FileController {
      */
     @GetMapping("/list")
     @UserLoginToken
-    public Response getFileList() {
-        List<FileVo> fileVoList = fileService.getFileList();
-        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
-        return new Response(fileDtoList);
+    public Response getFileList(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize) {
+        int offset = (pageIndex - 1) * pageSize;
+        List<FileDo> fileDoList = fileService.getFileList(offset, pageSize);
+        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        int count = fileService.countAllFiles();
+        FileDto fileDto = new FileDto();
+        fileDto.setFileVoList(fileVoList);
+        fileDto.setCount(count);
+        return new Response(fileDto);
     }
 
     /**
@@ -240,9 +242,9 @@ public class FileController {
     @UserLoginToken
     public Response getByFileName(@RequestParam("fileName") String fileName) {
         new ArrayList<>();
-        List<FileVo> fileVoList = fileService.getByFileName(fileName);
-        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
-        return new Response(fileDtoList);
+        List<FileDo> fileDoList = fileService.getByFileName(fileName);
+        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        return new Response(fileVoList);
     }
 
 }

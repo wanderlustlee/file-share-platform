@@ -11,7 +11,6 @@ public class TokenUtil {
 
     public static String getToken(User user) {
         String token="";
-        System.out.println(user.toString());
         token= JWT.create().withAudience(String.valueOf(user.getId()))
                 .sign(Algorithm.HMAC256(user.getPassword()));
         return token;

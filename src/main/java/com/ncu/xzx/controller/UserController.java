@@ -1,6 +1,5 @@
 package com.ncu.xzx.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.ncu.xzx.model.*;
 import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
@@ -42,6 +41,9 @@ public class UserController {
     @PostMapping("/login")
     public Response login(String userName, String password) {
         User user = userService.login(userName, password);
+        if (user == null) {
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名或密码错误");
+        }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
         return new Response(token);
@@ -93,9 +95,9 @@ public class UserController {
         String token = request.getHeader("Authorization");
         UserToken userToken = userTokenService.getByToken(token);
         int userId = userToken.getUserId();
-        List<FileVo> fileVoList= fileService.getByUserId(userId);
-        List<FileDto> fileDtoList = fileService.FileVoToFileDto(fileVoList);
-        return new Response(fileDtoList);
+        List<FileDo> fileDoList = fileService.getByUserId(userId);
+        List<FileVo> fileVoList = fileService.FileVoToFileDto(fileDoList);
+        return new Response(fileVoList);
     }
 
     @GetMapping("/validate")

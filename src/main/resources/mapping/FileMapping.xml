@@ -4,23 +4,27 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.ncu.xzx.mapper.FileMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
-    <select id="getByUserId" resultType="com.ncu.xzx.model.FileVo">
+    <select id="getByUserId" resultType="com.ncu.xzx.model.FileDo">
         SELECT * from file where userId = #{userId}
     </select>
 
-    <select id="getByFileName" resultType="com.ncu.xzx.model.FileVo">
+    <select id="getByFileName" resultType="com.ncu.xzx.model.FileDo">
         SELECT * from file where fileName like CONCAT(CONCAT('%', #{fileName}), '%');
     </select>
 
-    <select id="getAllFiles" resultType="com.ncu.xzx.model.FileVo">
-        select * from file where `operateType` = "upload"
+    <select id="getFilesByPage" resultType="com.ncu.xzx.model.FileDo">
+        select * from file where `operateType` = "upload" limit #{offset}, #{pageSize}
     </select>
 
-    <insert id="uploadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileVo">
+    <select id="countAllFiles" resultType="int">
+        select count(id) from file where `operateType` = "upload"
+    </select>
+
+    <insert id="uploadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileDo">
         insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'upload', #{fileName}, #{filePath}, #{createTime})
     </insert>
 
-    <insert id="downloadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileVo">
+    <insert id="downloadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileDo">
         insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'download', #{fileName}, #{filePath}, #{createTime})
     </insert>
 

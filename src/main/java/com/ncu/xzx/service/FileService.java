@@ -1,20 +1,22 @@
 package com.ncu.xzx.service;
 
-import com.ncu.xzx.model.FileDto;
 import com.ncu.xzx.model.FileVo;
+import com.ncu.xzx.model.FileDo;
 
 import java.util.List;
 
 public interface FileService {
-    int upload(FileVo file);
+    int upload(FileDo file);
 
-    int download(FileVo file);
+    int download(FileDo file);
 
-    List<FileVo> getFileList();
+    List<FileDo> getFileList(int offset, int pageSize);
 
-    List<FileVo> getByFileName(String fileName);
+    List<FileDo> getByFileName(String fileName);
 
-    List<FileVo> getByUserId(int userId);
+    List<FileDo> getByUserId(int userId);
 
-    List<FileDto> FileVoToFileDto(List<FileVo> fileVoList);
+    List<FileVo> FileVoToFileDto(List<FileDo> fileDoList);
+
+    int countAllFiles();
 }

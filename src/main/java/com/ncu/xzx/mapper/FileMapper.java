@@ -1,6 +1,6 @@
 package com.ncu.xzx.mapper;
 
-import com.ncu.xzx.model.FileVo;
+import com.ncu.xzx.model.FileDo;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -8,13 +8,15 @@ import java.util.List;
 @Mapper
 public interface FileMapper {
 
-    int uploadFile(FileVo file);
+    int uploadFile(FileDo file);
 
-    int downloadFile(FileVo file);
+    int downloadFile(FileDo file);
 
-    List<FileVo> getAllFiles();
+    List<FileDo> getFilesByPage(int offset, int pageSize);
 
-    List<FileVo> getByFileName(String fileName);
+    List<FileDo> getByFileName(String fileName);
 
-    List<FileVo> getByUserId(int userId);
+    List<FileDo> getByUserId(int userId);
+
+    int countAllFiles();
 }

@@ -1,6 +1,5 @@
 package com.ncu.xzx.mapper;
 
-import com.ncu.xzx.model.FileVo;
 import com.ncu.xzx.model.UserLoad;
 import org.apache.ibatis.annotations.Mapper;
 
