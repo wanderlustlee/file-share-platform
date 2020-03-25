@@ -60,4 +60,14 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService{
         });
         return choiceQuestionVoList;
     }
+
+    @Override
+    public int updateChoiceQuestion(ChoiceQuestion choiceQuestion) {
+        return choiceQuestionMapper.updateChoiceQuestion(choiceQuestion);
+    }
+
+    @Override
+    public List<ChoiceQuestion> getByDescription(String description) {
+        return choiceQuestionMapper.getByDescription(description);
+    }
 }

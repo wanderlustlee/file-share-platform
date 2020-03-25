@@ -16,4 +16,8 @@ public interface ChoiceQuestionMapper {
     List<ChoiceQuestion> getByUserId(int userId);
 
     int countAllChoiceQuestions();
+
+    int updateChoiceQuestion(ChoiceQuestion choiceQuestion);
+
+    List<ChoiceQuestion> getByDescription(String description);
 }

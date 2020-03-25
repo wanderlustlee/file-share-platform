@@ -2,7 +2,9 @@ package com.ncu.xzx.service;
 
 
 import com.ncu.xzx.model.ChoiceQuestion;
+import com.ncu.xzx.model.ChoiceQuestionVo;
 import com.ncu.xzx.model.ShortAnswerQuestion;
+import com.ncu.xzx.model.ShortAnswerQuestionVo;
 
 import java.util.List;
 
@@ -14,4 +16,10 @@ public interface ShortAnswerQuestionService {
     List<ShortAnswerQuestion> getByUserId(int userId);
 
     int countAllShortAnswerQuestions();
+
+    List<ShortAnswerQuestionVo> shortAnswerQuestionToShortAnswerQuestionVo(List<ShortAnswerQuestion> shortAnswerQuestionList);
+
+    int updateShortAnswerQuestion(ShortAnswerQuestion shortAnswerQuestion);
+
+    List<ChoiceQuestion> getByDescription(String description);
 }

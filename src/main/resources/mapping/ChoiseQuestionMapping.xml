@@ -17,8 +17,17 @@
     </select>
 
     <insert id="addChoiceQuestion" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.ChoiceQuestion">
-        insert into choiceQuestion (`userId`, `description`, `optionA`, `optionB`, `optionC`, `optionD`, `answer`, `point`, `createTime`) values (#{userId}, #{description}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer} #{point}, #{createTime})
+        insert into choiceQuestion (`userId`, `description`, `optionA`, `optionB`, `optionC`, `optionD`, `answer`, `point`, `createTime`) values (#{userId}, #{description}, #{optionA}, #{optionB}, #{optionC}, #{optionD}, #{answer}, #{point}, #{createTime})
     </insert>
+
+    <update id="updateChoiceQuestion" parameterType="com.ncu.xzx.model.ChoiceQuestion">
+        update choiceQuestion set `description` = #{description}, `optionA` = #{optionA}, `optionB` = #{optionB}, `optionC` = #{optionC}, `optionD` = #{optionD}, `answer` = #{answer}, `point` = #{point}
+        where id = #{id}
+    </update>
+
+    <select id="getByDescription" resultType="com.ncu.xzx.model.ChoiceQuestion">
+        select * from choiceQuestion where description like CONCAT(CONCAT('%', #{description}), '%');
+    </select>
 
 
 </mapper>

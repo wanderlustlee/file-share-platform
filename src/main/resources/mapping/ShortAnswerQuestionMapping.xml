@@ -20,5 +20,13 @@
         insert into shortAnswerQuestion (`userId`, `description`, `point`, `createTime`) values (#{userId}, #{description}, #{point}, #{createTime})
     </insert>
 
+    <update id="updateShortAnswerQuestion" parameterType="com.ncu.xzx.model.ShortAnswerQuestion">
+        update shortAnswerQuestion set `description` = #{description}, `point` = #{point}
+        where id = #{id}
+    </update>
+
+    <select id="getByDescription" resultType="com.ncu.xzx.model.ShortAnswerQuestion">
+        select * from shortAnswerQuestion where description like CONCAT(CONCAT('%', #{description}), '%');
+    </select>
 
 </mapper>

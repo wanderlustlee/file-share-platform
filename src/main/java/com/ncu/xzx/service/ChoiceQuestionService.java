@@ -18,4 +18,8 @@ public interface ChoiceQuestionService {
     int countAllChoiceQuestions();
 
     List<ChoiceQuestionVo> choiceQuestionToChoiceQuestionVo(List<ChoiceQuestion> choiceQuestionList);
+
+    int updateChoiceQuestion(ChoiceQuestion choiceQuestion);
+
+    List<ChoiceQuestion> getByDescription(String description);
 }

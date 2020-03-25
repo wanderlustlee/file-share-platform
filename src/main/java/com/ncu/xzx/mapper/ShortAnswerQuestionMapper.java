@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface ShoreAnswerQuestionMapper {
+public interface ShortAnswerQuestionMapper {
 
     int addShortAnswerQuestion(ShortAnswerQuestion shortAnswerQuestion);
 
@@ -16,4 +16,8 @@ public interface ShoreAnswerQuestionMapper {
     List<ShortAnswerQuestion> getByUserId(int userId);
 
     int countAllShortAnswerQuestions();
+
+    int updateShortAnswerQuestion(ShortAnswerQuestion shortAnswerQuestion);
+
+    List<ChoiceQuestion> getByDescription(String description);
 }
