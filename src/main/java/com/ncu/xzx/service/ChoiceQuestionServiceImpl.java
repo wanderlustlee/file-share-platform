@@ -70,4 +70,9 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService{
     public List<ChoiceQuestion> getByDescription(String description) {
         return choiceQuestionMapper.getByDescription(description);
     }
+
+    @Override
+    public ChoiceQuestion getById(int id) {
+        return choiceQuestionMapper.getById(id);
+    }
 }

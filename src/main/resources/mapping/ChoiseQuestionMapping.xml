@@ -29,5 +29,8 @@
         select * from choiceQuestion where description like CONCAT(CONCAT('%', #{description}), '%');
     </select>
 
+    <select id="getById" resultType="com.ncu.xzx.model.ChoiceQuestion">
+        select * from choiceQuestion where id = #{id}
+    </select>
 
 </mapper>

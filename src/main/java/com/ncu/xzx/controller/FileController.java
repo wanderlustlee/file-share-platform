@@ -38,7 +38,10 @@ public class FileController {
     @Autowired
     UserService userService;
 
-    public static String PATH = "/Users/vivo/upload";
+    public static String FILE_PATH = "/Users/vivo/upload";
+
+    public static String PAPER_PATH = "/Users/vivo/paper";
+
 
 //    public static String PATH = "D:\\fileupload";
 
@@ -58,15 +61,15 @@ public class FileController {
         String fileName = file.getOriginalFilename();
         //固定保存路径
         //判断上传文件的保存目录是否存在
-        File targetFile = new File(PATH);
+        File targetFile = new File(FILE_PATH);
         if (!targetFile.exists() && !targetFile.isDirectory()) {
-            System.out.println(PATH + "  目录不存在，需要创建");
+            System.out.println(FILE_PATH + "  目录不存在，需要创建");
             //创建目录
             targetFile.mkdirs();
         }
         FileOutputStream out = null;
         try {
-            out = new FileOutputStream(PATH + File.separator + fileName);
+            out = new FileOutputStream(FILE_PATH + File.separator + fileName);
             out.write(file.getBytes());
             out.flush();
             out.close();
@@ -77,7 +80,7 @@ public class FileController {
         FileDo fileObject = new FileDo();
         fileObject.setUserId(userId);
         fileObject.setFileName(fileName);
-        fileObject.setFilePath(PATH + fileName);
+        fileObject.setFilePath(FILE_PATH + fileName);
         fileObject.setCreateTime(new Date());
 
         int result = fileService.upload(fileObject);
@@ -100,19 +103,22 @@ public class FileController {
      */
     @GetMapping("/download-url")
     @UserLoginToken
-    public Response downloadUrl(@RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) {
+    public Response downloadUrl(@RequestParam("type") String type, @RequestParam("fileName") String fileName, HttpServletRequest request, HttpServletResponse response) {
         String token = request.getHeader("Authorization");
         UserToken userToken = userTokenService.getByToken(token);
         int userId = userToken.getUserId();
-        userLoadService.insertOrUpdateUserLoad(userId, "download");
+        if ("file".equals(type)) {
+            userLoadService.insertOrUpdateUserLoad(userId, "download");
 
-        FileDo fileObject = new FileDo();
-        fileObject.setUserId(userId);
-        fileObject.setFileName(fileName);
-        fileObject.setFilePath(PATH + fileName);
-        fileObject.setCreateTime(new Date());
+            FileDo fileObject = new FileDo();
+            fileObject.setUserId(userId);
+            fileObject.setFileName(fileName);
+            fileObject.setFilePath(FILE_PATH + fileName);
+            fileObject.setCreateTime(new Date());
 
-        fileService.download(fileObject);
+            fileService.download(fileObject);
+        } else if ("paper".equals(type)) {
+        }
         return new Response("/file/download/" + fileName);
 
     }
@@ -125,9 +131,15 @@ public class FileController {
      * @return
      */
     @GetMapping("/download/{fileName}")
-    public Response download(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response) {
+    public Response download(@PathVariable String fileName, @RequestParam("downloadType") String type, HttpServletRequest request, HttpServletResponse response) {
         //得到要下载的文件, linux为/  Windows为\\
-        File file = new File(PATH + File.separator + fileName);
+        String pathName = "";
+        if ("file".equals(type)) {
+            pathName = FILE_PATH + File.separator + fileName;
+        } else if ("paper".equals(type)) {
+            pathName = PAPER_PATH + File.separator + fileName;
+        }
+        File file = new File(pathName);
         //如果文件不存在
         if (!file.exists()) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
@@ -141,7 +153,7 @@ public class FileController {
             //读取要下载的文件，保存到文件输入流
             FileInputStream in = null;
 
-            in = new FileInputStream(PATH + File.separator + fileName);
+            in = new FileInputStream(pathName);
             //创建输出流
             OutputStream out = response.getOutputStream();
             //创建缓冲区
@@ -177,7 +189,17 @@ public class FileController {
     @RequestMapping("/preview/{fileName}")
     public Response preview(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response) {
         //得到要下载的文件, linux为/  Windows为\\
-        File file = new File(PATH + File.separator + fileName);
+        String pathName = "";
+        String previewPath = "";
+        String type = "paper";
+        if ("file".equals(type)) {
+            pathName = FILE_PATH + File.separator + fileName;
+            previewPath = "file:///" + FILE_PATH + fileName;
+        } else if ("paper".equals(type)) {
+            pathName = PAPER_PATH + File.separator + fileName;
+            previewPath = "file:///" + PAPER_PATH + fileName;
+        }
+        File file = new File(pathName);
         //如果文件不存在
         if (!file.exists()) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
@@ -189,10 +211,10 @@ public class FileController {
         try {
             //读取要下载的文件，保存到文件输入流
             FileInputStream in = null;
-            in = new FileInputStream(PATH + File.separator + fileName);
+            in = new FileInputStream(pathName);
 
             fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
-            URL u = new URL("file:///" + PATH+fileName);
+            URL u = new URL(previewPath);
             response.setContentType(u.openConnection().getContentType());
             response.setHeader("Content-Disposition", "inline; filename=" + fileName);
 

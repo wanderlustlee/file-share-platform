@@ -22,4 +22,7 @@ public interface ChoiceQuestionService {
     int updateChoiceQuestion(ChoiceQuestion choiceQuestion);
 
     List<ChoiceQuestion> getByDescription(String description);
+
+    ChoiceQuestion getById(int id);
+
 }

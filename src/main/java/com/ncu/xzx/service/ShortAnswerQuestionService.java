@@ -21,5 +21,7 @@ public interface ShortAnswerQuestionService {
 
     int updateShortAnswerQuestion(ShortAnswerQuestion shortAnswerQuestion);
 
-    List<ChoiceQuestion> getByDescription(String description);
+    List<ShortAnswerQuestion> getByDescription(String description);
+
+    ShortAnswerQuestion getById(int id);
 }

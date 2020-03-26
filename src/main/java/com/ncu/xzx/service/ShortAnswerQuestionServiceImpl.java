@@ -65,7 +65,12 @@ public class ShortAnswerQuestionServiceImpl implements ShortAnswerQuestionServic
     }
 
     @Override
-    public List<ChoiceQuestion> getByDescription(String description) {
+    public List<ShortAnswerQuestion> getByDescription(String description) {
         return shortAnswerQuestionMapper.getByDescription(description);
+    }
+
+    @Override
+    public ShortAnswerQuestion getById(int id) {
+        return shortAnswerQuestionMapper.getById(id);
     }
 }

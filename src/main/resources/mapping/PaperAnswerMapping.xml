@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ncu.xzx.mapper.PaperAnswerMapper">   <!-- 命名空间，名字可以随意起，只要不冲突即可 -->
+    <select id="getByUserId" resultType="com.ncu.xzx.model.Paper">
+        SELECT * from paperAnswer where userId = #{userId}
+    </select>
+
+    <select id="getPaperAnswersByPage" resultType="com.ncu.xzx.model.Paper">
+        select * from paperAnswer limit #{offset}, #{pageSize}
+    </select>
+
+    <select id="countAllPaperAnswers" resultType="int">
+        select count(id) from paperAnswer
+    </select>
+
+    <insert id="addPaperAnswer" parameterType="com.ncu.xzx.model.Paper">
+        insert into paperAnswer(`userId`, `paperName`, `paperPath`) values (#{userId}, #{paperName}, #{paperPath})
+    </insert>
+
+</mapper>

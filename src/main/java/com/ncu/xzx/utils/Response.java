@@ -39,6 +39,10 @@ public class Response {
         return new Response(null);
     }
 
+    public static Response failed(String msg) {
+        return new Response(ResponseCode.OPERATION_ERROR.getStatus(), msg);
+    }
+
 
     public Response() {
     }

@@ -51,17 +51,17 @@ public class FileServiceImpl implements FileService{
     public List<FileVo> FileDoToFileVo(List<FileDo> fileDoList) {
         List<FileVo> fileVoList = new ArrayList<>();
         fileDoList.forEach(FileDo -> {
-            FileVo FileVo = new FileVo();
-            BeanUtils.copyProperties(FileDo, FileVo);
+            FileVo fileVo = new FileVo();
+            BeanUtils.copyProperties(FileDo, fileVo);
             // 转换时间为字符串
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String createTime = format.format(FileDo.getCreateTime());
-            FileVo.setCreateTime(createTime);
+            fileVo.setCreateTime(createTime);
             User user = userMapper.getUserById(FileDo.getUserId());
             if (user != null) {
-                FileVo.setUserName(user.getUserName());
+                fileVo.setUserName(user.getUserName());
             }
-            fileVoList.add(FileVo);
+            fileVoList.add(fileVo);
         });
         return fileVoList;
     }

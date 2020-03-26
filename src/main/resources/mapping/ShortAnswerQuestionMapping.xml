@@ -29,4 +29,8 @@
         select * from shortAnswerQuestion where description like CONCAT(CONCAT('%', #{description}), '%');
     </select>
 
+    <select id="getById" resultType="com.ncu.xzx.model.ShortAnswerQuestion">
+        select * from shortAnswerQuestion where id = #{id}
+    </select>
+
 </mapper>
