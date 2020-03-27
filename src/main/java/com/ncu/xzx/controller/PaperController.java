@@ -33,4 +33,18 @@ public class PaperController {
         paperDto.setCount(count);
         return Response.ok(paperDto);
     }
+
+
+    @GetMapping("/answer/list")
+    @UserLoginToken
+    public Response getPagerAnswerList(@RequestParam("pageIndex") int pageIndex, @RequestParam("pageSize") int pageSize) {
+        int offset = (pageIndex - 1) * pageSize;
+        List<Paper> paperList = paperService.getPaperAnswersByPage(offset, pageSize);
+        List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
+        int count = paperService.countAllPaperQuestions();
+        PaperDto paperDto = new PaperDto();
+        paperDto.setPaperVoList(paperVoList);
+        paperDto.setCount(count);
+        return Response.ok(paperDto);
+    }
 }

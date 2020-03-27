@@ -131,18 +131,20 @@ public class FileController {
      * @return
      */
     @GetMapping("/download/{fileName}")
-    public Response download(@PathVariable String fileName, @RequestParam("downloadType") String type, HttpServletRequest request, HttpServletResponse response) {
-        //得到要下载的文件, linux为/  Windows为\\
+    public Response download(@PathVariable("fileName") String fileName, @RequestParam("type") String type, HttpServletRequest request, HttpServletResponse response) {
+        System.out.println("type  " + type);
+        // 得到要下载的文件, linux为/  Windows为\\
         String pathName = "";
         if ("file".equals(type)) {
             pathName = FILE_PATH + File.separator + fileName;
         } else if ("paper".equals(type)) {
             pathName = PAPER_PATH + File.separator + fileName;
         }
+        System.out.println("pathName  " + pathName);
         File file = new File(pathName);
         //如果文件不存在
         if (!file.exists()) {
-            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "文件不存在");
         }
         //处理文件名
         String realname = fileName.substring(fileName.indexOf("_") + 1);
@@ -187,11 +189,10 @@ public class FileController {
      * @return
      */
     @RequestMapping("/preview/{fileName}")
-    public Response preview(@PathVariable String fileName, HttpServletRequest request, HttpServletResponse response) {
+    public Response preview(@PathVariable String fileName, @RequestParam("type") String type, HttpServletRequest request, HttpServletResponse response) {
         //得到要下载的文件, linux为/  Windows为\\
         String pathName = "";
         String previewPath = "";
-        String type = "paper";
         if ("file".equals(type)) {
             pathName = FILE_PATH + File.separator + fileName;
             previewPath = "file:///" + FILE_PATH + fileName;

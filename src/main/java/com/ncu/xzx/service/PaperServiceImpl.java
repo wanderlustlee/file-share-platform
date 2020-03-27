@@ -120,7 +120,7 @@ public class PaperServiceImpl implements PaperService {
         });
 
 
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH:mm:ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
         String createTime = format.format(new Date());
 
         final String questionName = "试题-" + createTime;
@@ -161,6 +161,7 @@ public class PaperServiceImpl implements PaperService {
             for (int i = 0; i < choiceQuestionList.size(); i++) {
                 XWPFParagraph localParagraph = questionDoc.createParagraph();// 新建一个段落
                 XWPFRun localTitle = localParagraph.createRun();
+                System.out.println(choiceQuestionList.get(i).toString());
                 localTitle.setText((i + 1) + "、" + choiceQuestionList.get(i).getDescription());
 
                 localParagraph = questionDoc.createParagraph();// 新建一个段落
@@ -199,6 +200,7 @@ public class PaperServiceImpl implements PaperService {
             for (int j = 0; j < shortAnswerQuestionList.size(); j++) {
                 XWPFParagraph localParagraph = questionDoc.createParagraph();// 新建一个段落
                 XWPFRun localTitle = localParagraph.createRun();
+                System.out.println(shortAnswerQuestionList.get(j).toString());
                 localTitle.setText((j + 1) + "、" + shortAnswerQuestionList.get(j).getDescription());
 
                 localParagraph = questionDoc.createParagraph();// 新建一个段落
@@ -226,13 +228,13 @@ public class PaperServiceImpl implements PaperService {
 
             Paper paperQuestion = new Paper();
             paperQuestion.setUserId(userId);
-            paperQuestion.setPaperName(questionName);
+            paperQuestion.setPaperName(questionName + ".doc");
             paperQuestion.setPaperPath(questionPath);
             paperQuestionMapper.addPaperQuestion(paperQuestion);
 
             Paper paperAnswer = new Paper();
             paperAnswer.setUserId(userId);
-            paperAnswer.setPaperName(answerName);
+            paperAnswer.setPaperName(answerName + ".doc");
             paperAnswer.setPaperPath(answerPath);
             paperAnswerMapper.addPaperAnswer(paperAnswer);
 

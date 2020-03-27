@@ -46,6 +46,14 @@ public class UserController {
         }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
+        ValueOperations ops = stringRedisTemplate.opsForValue();
+        System.out.println(ops.get("visitCount"));
+        Integer visitCount = Integer.valueOf(ops.get("visitCount").toString());
+        if (visitCount == null) {
+            ops.set("visitCount", 1);
+        } else {
+            ops.set("visitCount", String.valueOf(visitCount + 1));
+        }
         return new Response(token);
     }
 
