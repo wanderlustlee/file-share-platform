@@ -7,9 +7,11 @@ import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
 import com.ncu.xzx.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,14 +42,14 @@ public class UserController {
     @PassToken
     @PostMapping("/login")
     public Response login(String userName, String password) {
-        User user = userService.login(userName, password);
+        String md5Password = MD5Util.md5(password);
+        User user = userService.login(userName, md5Password);
         if (user == null) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名或密码错误");
         }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
         ValueOperations ops = stringRedisTemplate.opsForValue();
-        System.out.println(ops.get("visitCount"));
         Integer visitCount = Integer.valueOf(ops.get("visitCount").toString());
         if (visitCount == null) {
             ops.set("visitCount", 1);
@@ -67,11 +69,19 @@ public class UserController {
         if (validateUser != null) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名已被占用");
         }
+        String md5Password = MD5Util.md5(password);
         User user = new User();
         user.setUserName(userName);
-        user.setPassword(password);
+        user.setPassword(md5Password);
+
         int result = userService.register(user);
         if (result > 0) {
+            ListOperations listOperations = redisTemplate.opsForList();
+            try {
+                listOperations.rightPush("userNameList", userName);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
             String token = TokenUtil.getToken(user);
             userTokenService.addUserToken(user.getId(), token);
             return new Response(true);
@@ -110,10 +120,18 @@ public class UserController {
 
     @GetMapping("/validate")
     public Response validateUserName(@RequestParam("userName") String userName) {
-        User user = userService.getUserByUserName(userName);
-        if (user == null) {
-            return new Response(true);
+        ListOperations listOperations = redisTemplate.opsForList();
+        List<String> userNameList = listOperations.range("userNameList", 0, -1);
+        System.out.println(userNameList.toString());
+        for (int i = 0; i < userNameList.size(); i++) {
+            if (userName.equals(userNameList.get(i))) {
+                return new Response(false);
+            }
         }
-        return new Response(false);
+//        User user = userService.getUserByUserName(userName);
+//        if (user == null) {
+//            return new Response(true);
+//        }
+        return new Response(true);
     }
 }
