@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.*;
 
@@ -117,8 +118,12 @@ public class FileController {
             fileObject.setCreateTime(new Date());
 
             fileService.download(fileObject);
-        } else if ("paper".equals(type)) {
         }
+//        try {
+//            fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
         return new Response("/file/download/" + fileName);
 
     }
@@ -133,6 +138,7 @@ public class FileController {
     @GetMapping("/download/{fileName}")
     public Response download(@PathVariable("fileName") String fileName, @RequestParam("type") String type, HttpServletRequest request, HttpServletResponse response) {
         System.out.println("type  " + type);
+        System.out.println("fileName   "+fileName);
         // 得到要下载的文件, linux为/  Windows为\\
         String pathName = "";
         if ("file".equals(type)) {
@@ -146,11 +152,9 @@ public class FileController {
         if (!file.exists()) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "文件不存在");
         }
-        //处理文件名
-        String realname = fileName.substring(fileName.indexOf("_") + 1);
         try {
             //设置响应头，控制浏览器下载该文件
-            response.setHeader("content-disposition", "attachment;filename=" + realname);
+            response.setHeader("content-disposition", "attachment;fileName=" + URLEncoder.encode(fileName, "UTF-8"));
             response.setHeader("content-transfer-encoding","binary");
             //读取要下载的文件，保存到文件输入流
             FileInputStream in = null;
