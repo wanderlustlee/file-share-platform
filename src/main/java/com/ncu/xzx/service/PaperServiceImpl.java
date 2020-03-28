@@ -275,4 +275,5 @@ public class PaperServiceImpl implements PaperService {
     public List<Paper> getPaperAnswerByName(String answerName) {
         return paperAnswerMapper.getPaperAnswerByName(answerName);
     }
+
 }
