@@ -20,4 +20,8 @@
         insert into paperQuestion(`userId`, `paperName`, `paperPath`) values (#{userId}, #{paperName}, #{paperPath})
     </insert>
 
+    <select id="getPaperQuestionByName" resultType="com.ncu.xzx.model.Paper">
+        SELECT * from paperQuestion where paperName like CONCAT(CONCAT('%', #{paperName}), '%');
+    </select>
+
 </mapper>

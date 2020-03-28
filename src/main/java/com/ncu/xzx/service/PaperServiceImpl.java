@@ -265,4 +265,14 @@ public class PaperServiceImpl implements PaperService {
         });
         return paperVoList;
     }
+
+    @Override
+    public List<Paper> getPaperQuestionByName(String questionName) {
+        return paperQuestionMapper.getPaperQuestionByName(questionName);
+    }
+
+    @Override
+    public List<Paper> getPaperAnswerByName(String answerName) {
+        return paperAnswerMapper.getPaperAnswerByName(answerName);
+    }
 }

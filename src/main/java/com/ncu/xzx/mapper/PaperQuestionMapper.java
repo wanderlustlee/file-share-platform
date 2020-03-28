@@ -15,4 +15,6 @@ public interface PaperQuestionMapper {
     int countAllPaperQuestions();
 
     int addPaperQuestion(Paper paperQuestion);
+
+    List<Paper> getPaperQuestionByName(String paperName);
 }

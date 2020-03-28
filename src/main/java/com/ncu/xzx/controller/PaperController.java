@@ -41,10 +41,28 @@ public class PaperController {
         int offset = (pageIndex - 1) * pageSize;
         List<Paper> paperList = paperService.getPaperAnswersByPage(offset, pageSize);
         List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
-        int count = paperService.countAllPaperQuestions();
+        int count = paperService.countAllPaperAnswers();
         PaperDto paperDto = new PaperDto();
         paperDto.setPaperVoList(paperVoList);
         paperDto.setCount(count);
+        return Response.ok(paperDto);
+    }
+
+    @GetMapping("/question/query")
+    @UserLoginToken
+    public Response getQuestionByPaperName(@RequestParam("paperName") String paperName) {
+        List<Paper> paperList = paperService.getPaperQuestionByName(paperName);
+        List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
+        PaperDto paperDto = new PaperDto(paperVoList, paperVoList.size());
+        return Response.ok(paperDto);
+    }
+
+    @GetMapping("/answer/query")
+    @UserLoginToken
+    public Response getAnswerByPaperName(@RequestParam("paperName") String paperName) {
+        List<Paper> paperList = paperService.getPaperAnswerByName(paperName);
+        List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
+        PaperDto paperDto = new PaperDto(paperVoList, paperVoList.size());
         return Response.ok(paperDto);
     }
 }

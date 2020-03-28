@@ -27,6 +27,11 @@ public interface PaperService {
 
     List<PaperVo> paperToPaperVo(List<Paper> paperList);
 
+    List<Paper> getPaperQuestionByName(String paperName);
+
+    List<Paper> getPaperAnswerByName(String paperName);
+
+
 
 
 }

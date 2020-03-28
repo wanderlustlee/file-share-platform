@@ -268,10 +268,10 @@ public class FileController {
     @RequestMapping("/query")
     @UserLoginToken
     public Response getByFileName(@RequestParam("fileName") String fileName) {
-        new ArrayList<>();
         List<FileDo> fileDoList = fileService.getByFileName(fileName);
         List<FileVo> fileVoList = fileService.FileDoToFileVo(fileDoList);
-        return new Response(fileVoList);
+        FileDto fileDto = new FileDto(fileVoList, fileVoList.size());
+        return Response.ok(fileDto);
     }
 
 }
