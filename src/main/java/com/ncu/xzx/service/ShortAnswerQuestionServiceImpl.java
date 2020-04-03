@@ -73,4 +73,9 @@ public class ShortAnswerQuestionServiceImpl implements ShortAnswerQuestionServic
     public ShortAnswerQuestion getById(int id) {
         return shortAnswerQuestionMapper.getById(id);
     }
+
+    @Override
+    public ShortAnswerQuestion getMaxId() {
+        return shortAnswerQuestionMapper.getMaxId();
+    }
 }

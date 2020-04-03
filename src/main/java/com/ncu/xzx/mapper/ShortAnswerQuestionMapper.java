@@ -22,4 +22,6 @@ public interface ShortAnswerQuestionMapper {
     List<ShortAnswerQuestion> getByDescription(String description);
 
     ShortAnswerQuestion getById(int id);
+
+    ShortAnswerQuestion getMaxId();
 }

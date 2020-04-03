@@ -17,10 +17,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class PaperServiceImpl implements PaperService {
@@ -85,39 +82,46 @@ public class PaperServiceImpl implements PaperService {
 
     @Override
     public boolean generateQuestionPaper(int userId, int choiceQuestionNumber, int shortAnswerQuestionNumber) {
-        int totalChoiceQuestion = choiceQuestionService.countAllChoiceQuestions();
-        int totalShortAnswerQuestion = shortAnswerQuestionService.countAllShortAnswerQuestions();
-        List<Integer> randomChoiceQuestionIdList = new ArrayList<>(choiceQuestionNumber);
-        List<Integer> randomShortAnswerQuestionIdList = new ArrayList<>(shortAnswerQuestionNumber);
+        int choiceQuestionMaxId = choiceQuestionService.getMaxId().getId();
+        int shortAnswerQuestionMaxId = shortAnswerQuestionService.getMaxId().getId();
+        Set<Integer> randomChoiceQuestionIdSet = new HashSet<>(choiceQuestionNumber);
+        Set<Integer> randomShortAnswerQuestionIdSet = new HashSet<>(shortAnswerQuestionNumber);
+
         List<ChoiceQuestion> choiceQuestionList = new ArrayList<>(choiceQuestionNumber);
         List<ShortAnswerQuestion> shortAnswerQuestionList = new ArrayList<>(shortAnswerQuestionNumber);
 
         Random random = new Random();
-        for (int i = 0; i < choiceQuestionNumber; i++) {
-            int randomNumber = random.nextInt(totalChoiceQuestion + 1);
-            while (randomChoiceQuestionIdList.contains(randomNumber)) {
-                randomNumber = random.nextInt(totalChoiceQuestion + 1);
+
+        // 从1到maxId生成随机数，获取试题，如果获取到才++
+        for (int i = 0; i < choiceQuestionNumber;) {
+            int randomNumber = random.nextInt(choiceQuestionMaxId + 1);
+            // 添加到set，用于去重
+            while (!randomChoiceQuestionIdSet.add(randomNumber)) {
+                randomNumber = random.nextInt(choiceQuestionMaxId + 1);
             }
-            randomChoiceQuestionIdList.add(randomNumber);
+
+            ChoiceQuestion choiceQuestion = choiceQuestionService.getById(randomNumber);
+            // 如果能获取到对应试题，才++
+            if (choiceQuestion != null) {
+                ++i;
+                choiceQuestionList.add(choiceQuestion);
+            }
         }
 
-        for (int i = 0; i < shortAnswerQuestionNumber; i++) {
-            int randomNumber = random.nextInt(totalShortAnswerQuestion + 1);
-            while (randomShortAnswerQuestionIdList.contains(randomNumber)) {
-                randomNumber = random.nextInt(totalChoiceQuestion + 1);
+        for (int j = 0; j < shortAnswerQuestionNumber;) {
+            int randomNumber = random.nextInt(shortAnswerQuestionMaxId + 1);
+            // 添加到set，用于去重
+            while (!randomShortAnswerQuestionIdSet.add(randomNumber)) {
+                randomNumber = random.nextInt(shortAnswerQuestionMaxId + 1);
             }
-            randomShortAnswerQuestionIdList.add(randomNumber);
+
+            ShortAnswerQuestion shortAnswerQuestion = shortAnswerQuestionService.getById(randomNumber);
+            // 如果能获取到对应试题，才++
+            if (shortAnswerQuestion != null) {
+                ++j;
+                shortAnswerQuestionList.add(shortAnswerQuestion);
+            }
         }
-
-        randomChoiceQuestionIdList.forEach(id -> {
-            ChoiceQuestion choiceQuestion = choiceQuestionService.getById(id);
-            choiceQuestionList.add(choiceQuestion);
-        });
-
-        randomShortAnswerQuestionIdList.forEach(id -> {
-            ShortAnswerQuestion shortAnswerQuestion = shortAnswerQuestionService.getById(id);
-            shortAnswerQuestionList.add(shortAnswerQuestion);
-        });
 
 
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
@@ -161,7 +165,6 @@ public class PaperServiceImpl implements PaperService {
             for (int i = 0; i < choiceQuestionList.size(); i++) {
                 XWPFParagraph localParagraph = questionDoc.createParagraph();// 新建一个段落
                 XWPFRun localTitle = localParagraph.createRun();
-                System.out.println(choiceQuestionList.get(i).toString());
                 localTitle.setText((i + 1) + "、" + choiceQuestionList.get(i).getDescription());
 
                 localParagraph = questionDoc.createParagraph();// 新建一个段落
@@ -191,6 +194,7 @@ public class PaperServiceImpl implements PaperService {
                 answerLocalTitle.setText((i + 1) + "、" + choiceQuestionList.get(i).getAnswer());
 
             }
+            answerTitle.addBreak();
 
             // 1.3 正文段落
             paragraph = questionDoc.createParagraph();// 新建一个段落
@@ -200,7 +204,6 @@ public class PaperServiceImpl implements PaperService {
             for (int j = 0; j < shortAnswerQuestionList.size(); j++) {
                 XWPFParagraph localParagraph = questionDoc.createParagraph();// 新建一个段落
                 XWPFRun localTitle = localParagraph.createRun();
-                System.out.println(shortAnswerQuestionList.get(j).toString());
                 localTitle.setText((j + 1) + "、" + shortAnswerQuestionList.get(j).getDescription());
 
                 localParagraph = questionDoc.createParagraph();// 新建一个段落

@@ -45,7 +45,7 @@ public class UserController {
         String md5Password = MD5Util.md5(password);
         User user = userService.login(userName, md5Password);
         if (user == null) {
-            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名或密码错误");
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), "用户名或密码错误");
         }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
@@ -63,11 +63,11 @@ public class UserController {
     @PostMapping("/register")
     public Response register(String userName, String password) {
         if (userName == null || password == null){
-            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "字段为空");
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), "字段为空");
         }
         User validateUser = userService.getUserByUserName(userName);
         if (validateUser != null) {
-            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "用户名已被占用");
+            return new Response(ResponseCode.OPERATION_ERROR.getStatus(), "用户名已被占用");
         }
         String md5Password = MD5Util.md5(password);
         User user = new User();

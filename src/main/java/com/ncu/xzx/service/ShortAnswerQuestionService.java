@@ -24,4 +24,6 @@ public interface ShortAnswerQuestionService {
     List<ShortAnswerQuestion> getByDescription(String description);
 
     ShortAnswerQuestion getById(int id);
+
+    ShortAnswerQuestion getMaxId();
 }

@@ -75,4 +75,9 @@ public class ChoiceQuestionServiceImpl implements ChoiceQuestionService{
     public ChoiceQuestion getById(int id) {
         return choiceQuestionMapper.getById(id);
     }
+
+    @Override
+    public ChoiceQuestion getMaxId() {
+        return choiceQuestionMapper.getMaxId();
+    }
 }

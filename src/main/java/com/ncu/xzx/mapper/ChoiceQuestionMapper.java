@@ -22,4 +22,6 @@ public interface ChoiceQuestionMapper {
     List<ChoiceQuestion> getByDescription(String description);
 
     ChoiceQuestion getById(int id);
+
+    ChoiceQuestion getMaxId();
 }

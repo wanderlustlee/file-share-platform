@@ -25,4 +25,6 @@ public interface ChoiceQuestionService {
 
     ChoiceQuestion getById(int id);
 
+    ChoiceQuestion getMaxId();
+
 }
