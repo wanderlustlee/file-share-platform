@@ -9,7 +9,7 @@
     </select>
 
     <insert id="addUserToken" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.UserToken">
-        insert into userToken (`userId`, `token`, `createTime`) values (#{userId}, #{token}, #{createTime})
+        insert into userToken (`userId`, `token`) values (#{userId}, #{token})
     </insert>
 
 </mapper>

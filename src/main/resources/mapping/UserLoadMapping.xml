@@ -9,7 +9,7 @@
     </select>
 
     <insert id="addUserLoad" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.UserLoad">
-        insert into userLoad (`userId`, `uploadTimes`, `downloadTimes`, `createTime`) values (#{userId}, 0, 0, #{createTime})
+        insert into userLoad (`userId`, `uploadTimes`, `downloadTimes`) values (#{userId}, 0, 0)
     </insert>
 
     <update id="updateUploadTimes" parameterType="int">

@@ -21,11 +21,11 @@
     </select>
 
     <insert id="uploadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileDo">
-        insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'upload', #{fileName}, #{filePath}, #{createTime})
+        insert into file (userId, operateType, fileName, filePath) values (#{userId}, 'upload', #{fileName}, #{filePath})
     </insert>
 
     <insert id="downloadFile" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.FileDo">
-        insert into file (userId, operateType, fileName, filePath, createTime) values (#{userId}, 'download', #{fileName}, #{filePath}, #{createTime})
+        insert into file (userId, operateType, fileName, filePath) values (#{userId}, 'download', #{fileName}, #{filePath})
     </insert>
 
 </mapper>

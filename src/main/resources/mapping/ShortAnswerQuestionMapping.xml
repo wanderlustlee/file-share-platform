@@ -17,7 +17,7 @@
     </select>
 
     <insert id="addShortAnswerQuestion" useGeneratedKeys="true" keyProperty="id" parameterType="com.ncu.xzx.model.ShortAnswerQuestion">
-        insert into shortAnswerQuestion (`userId`, `description`, `point`, `createTime`) values (#{userId}, #{description}, #{point}, #{createTime})
+        insert into shortAnswerQuestion (`userId`, `description`, `point`) values (#{userId}, #{description}, #{point})
     </insert>
 
     <update id="updateShortAnswerQuestion" parameterType="com.ncu.xzx.model.ShortAnswerQuestion">
