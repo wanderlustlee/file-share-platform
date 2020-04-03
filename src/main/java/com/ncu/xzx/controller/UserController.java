@@ -51,12 +51,14 @@ public class UserController {
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
         ValueOperations ops = stringRedisTemplate.opsForValue();
-        Integer visitCount = Integer.valueOf(ops.get("visitCount").toString());
-        if (visitCount == null) {
-            ops.set("visitCount", 1);
+        Object visitCountObject = ops.get("visitCount");
+        if (visitCountObject == null) {
+            ops.set("visitCount", "1");
         } else {
+            Integer visitCount = Integer.valueOf(visitCountObject.toString());
             ops.set("visitCount", String.valueOf(visitCount + 1));
         }
+
         return new Response(token);
     }
 
