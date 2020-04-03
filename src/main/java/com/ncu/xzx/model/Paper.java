@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
@@ -16,6 +16,6 @@ public class Paper {
     private int userId;
     private String paperName;
     private String paperPath;
-    private Date createTime;
-    private Date updateTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 }

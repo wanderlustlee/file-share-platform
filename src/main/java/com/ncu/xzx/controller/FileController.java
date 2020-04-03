@@ -82,7 +82,6 @@ public class FileController {
         fileObject.setUserId(userId);
         fileObject.setFileName(fileName);
         fileObject.setFilePath(FILE_PATH + fileName);
-        fileObject.setCreateTime(new Date());
 
         int result = fileService.upload(fileObject);
 
@@ -115,7 +114,6 @@ public class FileController {
             fileObject.setUserId(userId);
             fileObject.setFileName(fileName);
             fileObject.setFilePath(FILE_PATH + fileName);
-            fileObject.setCreateTime(new Date());
 
             fileService.download(fileObject);
         }

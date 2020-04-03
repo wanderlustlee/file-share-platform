@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -19,8 +20,8 @@ public class ChoiceQuestion {
     private String optionD;
     private String answer;
     private int point;
-    private Date createTime;
-    private Date updateTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
     private int isDelete;
 
 }

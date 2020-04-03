@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -15,6 +16,6 @@ public class FileDo {
     private String operateType;
     private String fileName;
     private String filePath;
-    private Date createTime;
-    private Date updateTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 }

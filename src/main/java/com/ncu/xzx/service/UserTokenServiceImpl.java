@@ -23,7 +23,6 @@ public class UserTokenServiceImpl implements UserTokenService{
         UserToken userToken = new UserToken();
         userToken.setUserId(userId);
         userToken.setToken(token);
-        userToken.setCreateTime(new Date());
         return userTokenMapper.addUserToken(userToken);
     }
 }

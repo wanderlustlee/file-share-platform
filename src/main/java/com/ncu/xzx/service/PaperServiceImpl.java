@@ -257,8 +257,9 @@ public class PaperServiceImpl implements PaperService {
             PaperVo paperVo = new PaperVo();
             BeanUtils.copyProperties(paper, paperVo);
             // 转换时间为字符串
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String createTime = format.format(paper.getCreateTime());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(paper.getCreateTime());
+            String createTime = simpleDateFormat.format(paper.getCreateTime());
             paperVo.setCreateTime(createTime);
             User user = userMapper.getUserById(paper.getUserId());
             if (user != null) {

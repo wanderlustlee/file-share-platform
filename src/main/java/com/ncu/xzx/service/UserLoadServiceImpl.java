@@ -20,7 +20,6 @@ public class UserLoadServiceImpl implements UserLoadService{
         if (userLoad == null) {
             UserLoad newUserLoad = new UserLoad();
             newUserLoad.setUserId(userId);
-            newUserLoad.setCreateTime(new Date());
             userLoadMapper.addUserLoad(newUserLoad);
         }
         if ("upload".equals(type)) {

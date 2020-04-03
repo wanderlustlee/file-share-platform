@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @Data
@@ -14,6 +15,6 @@ public class User {
     private String userName;
     private String nickName;
     private String password;
-    private Date createTime;
-    private Date updateTime;
+    private Timestamp createTime;
+    private Timestamp updateTime;
 }

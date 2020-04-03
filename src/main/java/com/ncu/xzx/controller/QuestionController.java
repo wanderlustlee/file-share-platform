@@ -61,7 +61,6 @@ public class QuestionController {
         int userId = userToken.getUserId();
         ChoiceQuestion choiceQuestion = JSONObject.parseObject(choiceQuestionString, ChoiceQuestion.class);
         choiceQuestion.setUserId(userId);
-        choiceQuestion.setCreateTime(new Date());
         int result = choiceQuestionService.addChoiceQuestion(choiceQuestion);
         if (result > 0) {
             return Response.ok();
@@ -116,7 +115,6 @@ public class QuestionController {
         int userId = userToken.getUserId();
         ShortAnswerQuestion shortAnswerQuestion = JSONObject.parseObject(shortAnswerQuestionString, ShortAnswerQuestion.class);
         shortAnswerQuestion.setUserId(userId);
-        shortAnswerQuestion.setCreateTime(new Date());
         int result = shortAnswerQuestionService.addShortAnswerQuestion(shortAnswerQuestion);
         if (result > 0) {
             return Response.ok();
