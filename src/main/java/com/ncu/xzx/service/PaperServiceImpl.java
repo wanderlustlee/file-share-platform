@@ -11,6 +11,8 @@ import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -36,6 +38,11 @@ public class PaperServiceImpl implements PaperService {
 
     @Autowired
     UserMapper userMapper;
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    RedisTemplate redisTemplate;
 
 
     public static String PATH = "/Users/vivo/paper";
@@ -244,6 +251,15 @@ public class PaperServiceImpl implements PaperService {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+
+        ListOperations listOperations = redisTemplate.opsForList();
+        User user = userService.getUserById(userId);
+        String uploadRemind = user.getUserName() + "生成了" + questionName + ".doc";
+        try {
+            listOperations.leftPush("remindList", uploadRemind);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
 

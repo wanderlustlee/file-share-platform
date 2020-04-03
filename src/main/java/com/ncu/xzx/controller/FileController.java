@@ -1,9 +1,6 @@
 package com.ncu.xzx.controller;
 
-import com.ncu.xzx.model.FileDto;
-import com.ncu.xzx.model.FileVo;
-import com.ncu.xzx.model.FileDo;
-import com.ncu.xzx.model.UserToken;
+import com.ncu.xzx.model.*;
 import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
@@ -12,6 +9,8 @@ import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
 import com.ncu.xzx.utils.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +37,9 @@ public class FileController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RedisTemplate redisTemplate;
 
     public static String FILE_PATH = "/Users/vivo/upload";
 
@@ -87,7 +89,15 @@ public class FileController {
 
         if (result > 0) {
             userLoadService.insertOrUpdateUserLoad(userId, "upload");
-            return new Response("");
+            ListOperations listOperations = redisTemplate.opsForList();
+            User user = userService.getUserById(userId);
+            String uploadRemind = user.getUserName() + "上传了" + fileObject.getFileName();
+            try {
+                listOperations.leftPush("remindList", uploadRemind);
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            return Response.ok();
         }
 
         return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
@@ -135,8 +145,6 @@ public class FileController {
      */
     @GetMapping("/download/{fileName}")
     public Response download(@PathVariable("fileName") String fileName, @RequestParam("type") String type, HttpServletRequest request, HttpServletResponse response) {
-        System.out.println("type  " + type);
-        System.out.println("fileName   "+fileName);
         // 得到要下载的文件, linux为/  Windows为\\
         String pathName = "";
         if ("file".equals(type)) {

@@ -3,15 +3,14 @@ package com.ncu.xzx.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.ncu.xzx.model.*;
-import com.ncu.xzx.service.ChoiceQuestionService;
-import com.ncu.xzx.service.PaperService;
-import com.ncu.xzx.service.ShortAnswerQuestionService;
-import com.ncu.xzx.service.UserTokenService;
+import com.ncu.xzx.service.*;
 import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
 import com.ncu.xzx.utils.UserLoginToken;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,6 +37,9 @@ public class QuestionController {
 
     @Autowired
     PaperService paperService;
+
+    @Autowired
+    UserService userService;
 
     @GetMapping("/choice/list")
     @UserLoginToken

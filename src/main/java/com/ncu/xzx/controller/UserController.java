@@ -59,7 +59,7 @@ public class UserController {
             ops.set("visitCount", String.valueOf(visitCount + 1));
         }
 
-        return new Response(token);
+        return Response.ok(token);
     }
 
     @PassToken
@@ -87,7 +87,7 @@ public class UserController {
             }
             String token = TokenUtil.getToken(user);
             userTokenService.addUserToken(user.getId(), token);
-            return new Response(true);
+            return Response.ok(true);
         }
         return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
     }
@@ -97,7 +97,7 @@ public class UserController {
     public Response getVisitCount(){
         ValueOperations ops = stringRedisTemplate.opsForValue();
         Object visitCount = ops.get("visitCount");
-        return new Response(visitCount);
+        return Response.ok(visitCount);
     }
 
     @RequestMapping("/role")
@@ -107,7 +107,7 @@ public class UserController {
         String[] roles = {"Home","Dashbord","Driver","Driver-index","Permission","PageUser","PageAdmin","Roles","Table","BaseTable","ComplexTable","Icons","Icons-index","Components","Sldie-yz","Upload","Carousel","Echarts","Sldie-chart","Dynamic-chart","Map-chart","Excel","Excel-out","Excel-in","Mutiheader-out","Error","Page404","Github","NavTest","Nav1","Nav2","Nav2-1","Nav2-2","Nav2-2-1","Nav2-2-2","*404"};
         role.setRoles(Arrays.asList(roles));
         role.setIntroduce("test");
-        return new Response(role);
+        return Response.ok(role);
     }
 
     @GetMapping("/history")
@@ -123,7 +123,7 @@ public class UserController {
         List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
 
         UserHistory userHistory = new UserHistory(fileVoList, paperVoList);
-        return new Response(userHistory);
+        return Response.ok(userHistory);
     }
 
     @GetMapping("/validate")
@@ -133,13 +133,20 @@ public class UserController {
         System.out.println(userNameList.toString());
         for (int i = 0; i < userNameList.size(); i++) {
             if (userName.equals(userNameList.get(i))) {
-                return new Response(false);
+                return Response.ok(false);
             }
         }
 //        User user = userService.getUserByUserName(userName);
 //        if (user == null) {
 //            return new Response(true);
 //        }
-        return new Response(true);
+        return Response.ok(true);
+    }
+
+    @GetMapping("/remind")
+    public Response getRemind() {
+        ListOperations listOperations = redisTemplate.opsForList();
+        List<String> remindList = listOperations.range("remindList", 0, 10);
+        return Response.ok(remindList);
     }
 }
