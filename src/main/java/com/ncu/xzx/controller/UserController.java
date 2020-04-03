@@ -1,10 +1,7 @@
 package com.ncu.xzx.controller;
 
 import com.ncu.xzx.model.*;
-import com.ncu.xzx.service.FileService;
-import com.ncu.xzx.service.UserLoadService;
-import com.ncu.xzx.service.UserService;
-import com.ncu.xzx.service.UserTokenService;
+import com.ncu.xzx.service.*;
 import com.ncu.xzx.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
@@ -32,6 +29,10 @@ public class UserController {
 
     @Autowired
     FileService fileService;
+
+    @Autowired
+    PaperService paperService;
+
 
     @Autowired
     RedisTemplate redisTemplate; //默认提供的用来操作对象的redis操作实例
@@ -107,7 +108,7 @@ public class UserController {
         return new Response(role);
     }
 
-    @GetMapping("/load-history")
+    @GetMapping("/history")
     @UserLoginToken
     public Response getUserLoadHistory(HttpServletRequest request) {
         String token = request.getHeader("Authorization");
@@ -115,7 +116,12 @@ public class UserController {
         int userId = userToken.getUserId();
         List<FileDo> fileDoList = fileService.getByUserId(userId);
         List<FileVo> fileVoList = fileService.FileDoToFileVo(fileDoList);
-        return new Response(fileVoList);
+
+        List<Paper> paperList = paperService.getPaperQuestionByUserId(userId);
+        List<PaperVo> paperVoList = paperService.paperToPaperVo(paperList);
+
+        UserHistory userHistory = new UserHistory(fileVoList, paperVoList);
+        return new Response(userHistory);
     }
 
     @GetMapping("/validate")
