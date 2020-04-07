@@ -5,6 +5,7 @@ import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
+import com.ncu.xzx.utils.MD5Util;
 import com.ncu.xzx.utils.Response;
 import com.ncu.xzx.utils.ResponseCode;
 import com.ncu.xzx.utils.UserLoginToken;
@@ -17,8 +18,11 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigInteger;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.Date;
 import java.util.*;
 
@@ -221,8 +225,7 @@ public class FileController {
         String realname = fileName.substring(fileName.indexOf("_") + 1);
         try {
             //读取要下载的文件，保存到文件输入流
-            FileInputStream in = null;
-            in = new FileInputStream(pathName);
+            FileInputStream in = new FileInputStream(pathName);
 
             fileName = new String(fileName.getBytes("UTF-8"), "ISO-8859-1");
             URL u = new URL(previewPath);
@@ -279,5 +282,62 @@ public class FileController {
         FileDto fileDto = new FileDto(fileVoList, fileVoList.size());
         return Response.ok(fileDto);
     }
+
+    /**
+     * 校验试卷
+     * @param file
+     * @return
+     */
+    @PostMapping("/verify")
+    @UserLoginToken
+    public Response verify(@RequestParam("file") MultipartFile file) {
+        FileInputStream fileInputStream = null;
+        DigestInputStream digestInputStream = null;
+        try {
+            // 获取上传文件的md5摘要
+            String fileName = file.getOriginalFilename();
+            System.out.println("fileName   " + fileName);
+            byte[] bytes = file.getBytes();
+            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            messageDigest.update(bytes);
+            byte[] userDigest = messageDigest.digest();
+            messageDigest.reset();
+            System.out.println("userFileLength  " + file.getSize());
+            System.out.println("userDigest  " + new BigInteger(1, userDigest).toString(16));
+            // 获取上传文件对应的本地文件的md5摘要
+            String pathName = FILE_PATH + File.separator + fileName;
+            System.out.println("pathName  " + pathName);
+            File localFile = new File(pathName);
+            System.out.println("localFileLength  " + localFile.length());
+            fileInputStream = new FileInputStream(localFile);
+            byte[] localBytes = new byte[(int)localFile.length()];
+            // 生成摘要
+            digestInputStream = new DigestInputStream(fileInputStream, messageDigest);
+            while (digestInputStream.read(localBytes) > 0);
+            messageDigest= digestInputStream.getMessageDigest();
+            byte[] localDigest = messageDigest.digest();
+            System.out.println("localDigest  " + new BigInteger(1, localDigest).toString(16));
+            // 校验两个摘要是否相等
+            boolean verifyResult = MessageDigest.isEqual(userDigest, localDigest);
+            digestInputStream.close();
+            fileInputStream.close();
+            return Response.ok(verifyResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.failed("校验失败");
+        } finally {
+            try {
+                if (digestInputStream != null) {
+                    digestInputStream.close();
+                }
+                if (fileInputStream != null) {
+                    fileInputStream.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
 }
