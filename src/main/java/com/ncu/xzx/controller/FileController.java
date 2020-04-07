@@ -310,6 +310,9 @@ public class FileController {
             String pathName = FILE_PATH + File.separator + fileName;
             System.out.println("pathName  " + pathName);
             File localFile = new File(pathName);
+            if (!localFile.exists()) {
+                return Response.failed("该文件在服务器中没有对应文件");
+            }
             System.out.println("localFileLength  " + localFile.length());
             fileInputStream = new FileInputStream(localFile);
             byte[] localBytes = new byte[(int)localFile.length()];
