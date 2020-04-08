@@ -39,6 +39,10 @@ public class UserController {
 
     @Autowired
     StringRedisTemplate stringRedisTemplate; //默认提供的用来操作字符串的redis操作实例
+    
+    private final String VISIT_COUNT_KEY = "visitCount";
+
+    private final String USERNAME_LIST_KEY = "userNameList";
 
     @PassToken
     @PostMapping("/login")
@@ -50,13 +54,12 @@ public class UserController {
         }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
-        ValueOperations ops = stringRedisTemplate.opsForValue();
-        Object visitCountObject = ops.get("visitCount");
+        ValueOperations<String, Integer> ops = redisTemplate.opsForValue();
+        Object visitCountObject = ops.get(VISIT_COUNT_KEY);
         if (visitCountObject == null) {
-            ops.set("visitCount", "1");
+            ops.set(VISIT_COUNT_KEY, 1);
         } else {
-            Integer visitCount = Integer.valueOf(visitCountObject.toString());
-            ops.set("visitCount", String.valueOf(visitCount + 1));
+            ops.increment(VISIT_COUNT_KEY);
         }
 
         return Response.ok(token);
@@ -81,7 +84,7 @@ public class UserController {
         if (result > 0) {
             ListOperations listOperations = redisTemplate.opsForList();
             try {
-                listOperations.rightPush("userNameList", userName);
+                listOperations.rightPush(USERNAME_LIST_KEY, userName);
             }catch (Exception e) {
                 e.printStackTrace();
             }
@@ -95,8 +98,8 @@ public class UserController {
     @PassToken
     @RequestMapping("/visit-count")
     public Response getVisitCount(){
-        ValueOperations ops = stringRedisTemplate.opsForValue();
-        Object visitCount = ops.get("visitCount");
+        ValueOperations ops = redisTemplate.opsForValue();
+        Object visitCount = ops.get(VISIT_COUNT_KEY);
         return Response.ok(visitCount);
     }
 
@@ -129,17 +132,13 @@ public class UserController {
     @GetMapping("/validate")
     public Response validateUserName(@RequestParam("userName") String userName) {
         ListOperations listOperations = redisTemplate.opsForList();
-        List<String> userNameList = listOperations.range("userNameList", 0, -1);
+        List<String> userNameList = listOperations.range(USERNAME_LIST_KEY, 0, -1);
         System.out.println(userNameList.toString());
         for (int i = 0; i < userNameList.size(); i++) {
             if (userName.equals(userNameList.get(i))) {
                 return Response.ok(false);
             }
         }
-//        User user = userService.getUserByUserName(userName);
-//        if (user == null) {
-//            return new Response(true);
-//        }
         return Response.ok(true);
     }
 
