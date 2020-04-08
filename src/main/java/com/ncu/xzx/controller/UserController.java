@@ -54,14 +54,9 @@ public class UserController {
         }
         String token = TokenUtil.getToken(user);
         userTokenService.addUserToken(user.getId(), token);
-        ValueOperations<String, Integer> ops = redisTemplate.opsForValue();
-        Object visitCountObject = ops.get(VISIT_COUNT_KEY);
-        if (visitCountObject == null) {
-            ops.set(VISIT_COUNT_KEY, 1);
-        } else {
-            ops.increment(VISIT_COUNT_KEY);
-        }
-
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        System.out.println(ops.get(VISIT_COUNT_KEY));
+        ops.increment(VISIT_COUNT_KEY);
         return Response.ok(token);
     }
 
@@ -98,8 +93,11 @@ public class UserController {
     @PassToken
     @RequestMapping("/visit-count")
     public Response getVisitCount(){
-        ValueOperations ops = redisTemplate.opsForValue();
-        Object visitCount = ops.get(VISIT_COUNT_KEY);
+        ValueOperations<String, String> ops = stringRedisTemplate.opsForValue();
+        String visitCount = ops.get(VISIT_COUNT_KEY);
+        if (visitCount == null) {
+            return Response.ok(0);
+        }
         return Response.ok(visitCount);
     }
 
