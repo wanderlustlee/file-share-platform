@@ -1,6 +1,10 @@
 # file-share-platform
 教学资源共享平台
 
+使用前后端分离的架构，前端代码仓库：https://github.com/wanderlustlee/file-share-platform-vue
+
+后端基于 SpringBoot，前端基于 Vue-cli
+
 ## 功能介绍
 
 实现文件的上传、下载、预览功能。
