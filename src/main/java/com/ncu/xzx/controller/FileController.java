@@ -45,14 +45,9 @@ public class FileController {
     @Autowired
     RedisTemplate redisTemplate;
 
-    public static String FILE_PATH = "/Users/vivo/upload";
+    public static String FILE_PATH = "D:\\fileupload";
 
-    public static String PAPER_PATH = "/Users/vivo/paper";
-
-
-//    public static String FILE_PATH = "D:\\fileupload";
-//
-//    public static String PAPER_PATH = "D:\\paperupload";
+    public static String PAPER_PATH = "D:\\paperupload";
 
     /**
      * 上传

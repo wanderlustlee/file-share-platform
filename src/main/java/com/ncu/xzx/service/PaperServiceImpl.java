@@ -44,10 +44,7 @@ public class PaperServiceImpl implements PaperService {
     @Autowired
     RedisTemplate redisTemplate;
 
-
-    public static String PATH = "/Users/vivo/paper";
-
-//    public static String PATH = "D:\\paperupload";
+    public static String PATH = "D:\\paperupload";
 
     @Override
     public int addPaperQuestion(Paper paperQuestion) {
