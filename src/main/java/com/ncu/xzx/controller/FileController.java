@@ -5,10 +5,7 @@ import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
-import com.ncu.xzx.utils.MD5Util;
-import com.ncu.xzx.utils.Response;
-import com.ncu.xzx.utils.ResponseCode;
-import com.ncu.xzx.utils.UserLoginToken;
+import com.ncu.xzx.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -56,11 +53,8 @@ public class FileController {
      */
     @PostMapping("/upload")
     @UserLoginToken
-    public Response upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        UserToken userToken = userTokenService.getByToken(token);
-        int userId = userToken.getUserId();
-
+    public Response upload(@RequestParam("file") MultipartFile file) {
+        int userId = LoginContextUtil.getUserId();
         String contentType = file.getContentType();
         String fileName = file.getOriginalFilename();
         //固定保存路径

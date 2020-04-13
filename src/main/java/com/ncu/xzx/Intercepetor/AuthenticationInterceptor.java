@@ -9,6 +9,8 @@ import com.ncu.xzx.model.User;
 import com.ncu.xzx.model.UserToken;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
+import com.ncu.xzx.utils.Context;
+import com.ncu.xzx.utils.LoginContext;
 import com.ncu.xzx.utils.PassToken;
 import com.ncu.xzx.utils.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +59,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
                 } catch (JWTDecodeException j) {
                     throw new RuntimeException("401");
                 }
-                User user = userService.getUserById(Integer.valueOf(userId));
+                Context context = Context.builder().userId(Integer.parseInt(userId)).build();
+                LoginContext.set(context);
+                User user = userService.getUserById(Integer.parseInt(userId));
 //                UserToken userToken = userTokenService.getByToken(token);
 
                 if (user == null) {
