@@ -57,7 +57,6 @@ public class FileController {
         int userId = LoginContextUtil.getUserId();
         String contentType = file.getContentType();
         String fileName = file.getOriginalFilename();
-        //固定保存路径
         //判断上传文件的保存目录是否存在
         File targetFile = new File(FILE_PATH);
         if (!targetFile.exists() && !targetFile.isDirectory()) {
