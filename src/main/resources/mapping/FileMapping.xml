@@ -9,7 +9,7 @@
     </select>
 
     <select id="getByFileName" resultType="com.ncu.xzx.model.FileDo">
-        SELECT * from file where fileName like CONCAT(CONCAT('%', #{fileName}), '%');
+        SELECT * from file where `operateType` = "upload" and fileName like CONCAT(CONCAT('%', #{fileName}), '%');
     </select>
 
     <select id="getFilesByPage" resultType="com.ncu.xzx.model.FileDo">
