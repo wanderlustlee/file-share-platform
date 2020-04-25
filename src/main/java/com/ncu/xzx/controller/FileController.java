@@ -5,10 +5,7 @@ import com.ncu.xzx.service.FileService;
 import com.ncu.xzx.service.UserLoadService;
 import com.ncu.xzx.service.UserService;
 import com.ncu.xzx.service.UserTokenService;
-import com.ncu.xzx.utils.MD5Util;
-import com.ncu.xzx.utils.Response;
-import com.ncu.xzx.utils.ResponseCode;
-import com.ncu.xzx.utils.UserLoginToken;
+import com.ncu.xzx.utils.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -56,53 +53,13 @@ public class FileController {
      */
     @PostMapping("/upload")
     @UserLoginToken
-    public Response upload(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        UserToken userToken = userTokenService.getByToken(token);
-        int userId = userToken.getUserId();
-
-        String contentType = file.getContentType();
-        String fileName = file.getOriginalFilename();
-        //固定保存路径
-        //判断上传文件的保存目录是否存在
-        File targetFile = new File(FILE_PATH);
-        if (!targetFile.exists() && !targetFile.isDirectory()) {
-            System.out.println(FILE_PATH + "  目录不存在，需要创建");
-            //创建目录
-            targetFile.mkdirs();
-        }
-        FileOutputStream out = null;
-        try {
-            out = new FileOutputStream(FILE_PATH + File.separator + fileName);
-            out.write(file.getBytes());
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        FileDo fileObject = new FileDo();
-        fileObject.setUserId(userId);
-        fileObject.setFileName(fileName);
-        fileObject.setFilePath(FILE_PATH + fileName);
-
-        int result = fileService.upload(fileObject);
-
+    public Response upload(@RequestParam("file") MultipartFile file) {
+        int userId = LoginContextUtil.getUserId();
+        int result = fileService.upload(file, userId);
         if (result > 0) {
-            userLoadService.insertOrUpdateUserLoad(userId, "upload");
-            ListOperations listOperations = redisTemplate.opsForList();
-            User user = userService.getUserById(userId);
-            String uploadRemind = user.getUserName() + "上传了" + fileObject.getFileName();
-            try {
-                listOperations.leftPush("remindList", uploadRemind);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
             return Response.ok();
         }
-
         return new Response(ResponseCode.OPERATION_ERROR.getStatus(), ResponseCode.OPERATION_ERROR.getMsg(), "");
-
     }
 
     /**

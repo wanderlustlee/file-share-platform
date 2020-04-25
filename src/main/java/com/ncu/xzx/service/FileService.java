@@ -2,11 +2,12 @@ package com.ncu.xzx.service;
 
 import com.ncu.xzx.model.FileVo;
 import com.ncu.xzx.model.FileDo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface FileService {
-    int upload(FileDo file);
+    int upload(MultipartFile file, int userId);
 
     int download(FileDo file);
 
