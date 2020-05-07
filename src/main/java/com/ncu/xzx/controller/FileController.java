@@ -110,7 +110,6 @@ public class FileController {
         } else if ("paper".equals(type)) {
             pathName = PAPER_PATH + File.separator + fileName;
         }
-        System.out.println("pathName  " + pathName);
         File file = new File(pathName);
         //如果文件不存在
         if (!file.exists()) {
@@ -152,12 +151,11 @@ public class FileController {
      * var originUrl = 'http://10.12.65.57:8888/file/preview/养成活动攻略-2.19.docx';
      * window.open('http://127.0.0.1:8012/onlinePreview?url='+encodeURIComponent(originUrl));
      * @param fileName
-     * @param request
      * @param response
      * @return
      */
     @RequestMapping("/preview/{fileName}")
-    public Response preview(@PathVariable String fileName, @RequestParam("type") String type, HttpServletRequest request, HttpServletResponse response) {
+    public Response preview(@PathVariable String fileName, @RequestParam("type") String type, HttpServletResponse response) {
         //得到要下载的文件, linux为/  Windows为\\
         String pathName = "";
         String previewPath = "";
@@ -245,55 +243,7 @@ public class FileController {
     @PostMapping("/verify")
     @UserLoginToken
     public Response verify(@RequestParam("file") MultipartFile file) {
-        FileInputStream fileInputStream = null;
-        DigestInputStream digestInputStream = null;
-        try {
-            // 获取上传文件的md5摘要
-            String fileName = file.getOriginalFilename();
-            System.out.println("fileName   " + fileName);
-            byte[] bytes = file.getBytes();
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
-            messageDigest.update(bytes);
-            byte[] userDigest = messageDigest.digest();
-            messageDigest.reset();
-            System.out.println("userFileLength  " + file.getSize());
-            System.out.println("userDigest  " + new BigInteger(1, userDigest).toString(16));
-            // 获取上传文件对应的本地文件的md5摘要
-            String pathName = FILE_PATH + File.separator + fileName;
-            System.out.println("pathName  " + pathName);
-            File localFile = new File(pathName);
-            if (!localFile.exists()) {
-                return Response.failed("该文件在服务器中没有对应文件");
-            }
-            System.out.println("localFileLength  " + localFile.length());
-            fileInputStream = new FileInputStream(localFile);
-            byte[] localBytes = new byte[(int)localFile.length()];
-            // 生成摘要
-            digestInputStream = new DigestInputStream(fileInputStream, messageDigest);
-            while (digestInputStream.read(localBytes) > 0);
-            messageDigest= digestInputStream.getMessageDigest();
-            byte[] localDigest = messageDigest.digest();
-            System.out.println("localDigest  " + new BigInteger(1, localDigest).toString(16));
-            // 校验两个摘要是否相等
-            boolean verifyResult = MessageDigest.isEqual(userDigest, localDigest);
-            digestInputStream.close();
-            fileInputStream.close();
-            return Response.ok(verifyResult);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.failed("校验失败");
-        } finally {
-            try {
-                if (digestInputStream != null) {
-                    digestInputStream.close();
-                }
-                if (fileInputStream != null) {
-                    fileInputStream.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        return fileService.verify(file);
     }
 
 

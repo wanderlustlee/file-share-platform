@@ -2,6 +2,7 @@ package com.ncu.xzx.service;
 
 import com.ncu.xzx.model.FileVo;
 import com.ncu.xzx.model.FileDo;
+import com.ncu.xzx.utils.Response;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -10,6 +11,8 @@ public interface FileService {
     int upload(MultipartFile file, int userId);
 
     int download(FileDo file);
+
+    Response verify(MultipartFile file);
 
     List<FileDo> getFileList(int offset, int pageSize);
 
