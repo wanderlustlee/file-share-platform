@@ -7,6 +7,7 @@ import com.ncu.xzx.model.FileDo;
 import com.ncu.xzx.model.User;
 import com.ncu.xzx.utils.LoginContextUtil;
 import com.ncu.xzx.utils.Response;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
@@ -20,6 +21,7 @@ import java.io.FileOutputStream;
 import java.math.BigInteger;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.security.Security;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,11 +100,12 @@ public class FileServiceImpl implements FileService{
         FileInputStream fileInputStream = null;
         DigestInputStream digestInputStream = null;
         try {
+            Security.addProvider(new BouncyCastleProvider());
             // 获取上传文件的md5摘要
             String fileName = file.getOriginalFilename();
             System.out.println("fileName   " + fileName);
             byte[] bytes = file.getBytes();
-            MessageDigest messageDigest = MessageDigest.getInstance("MD5");
+            MessageDigest messageDigest = MessageDigest.getInstance("SM3", "BC");
             messageDigest.update(bytes);
             byte[] userDigest = messageDigest.digest();
             messageDigest.reset();
