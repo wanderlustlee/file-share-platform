@@ -3,6 +3,7 @@ package com.ncu.xzx.controller;
 import com.ncu.xzx.model.*;
 import com.ncu.xzx.service.*;
 import com.ncu.xzx.utils.*;
+import org.bouncycastle.jcajce.provider.digest.SM3;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -47,8 +48,8 @@ public class UserController {
     @PassToken
     @PostMapping("/login")
     public Response login(String userName, String password) {
-        String md5Password = MD5Util.md5(password);
-        User user = userService.login(userName, md5Password);
+        String encryptPassword = Sm3Utils.encrypt(password);
+        User user = userService.login(userName, encryptPassword);
         if (user == null) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), "用户名或密码错误");
         }
@@ -70,10 +71,10 @@ public class UserController {
         if (validateUser != null) {
             return new Response(ResponseCode.OPERATION_ERROR.getStatus(), "用户名已被占用");
         }
-        String md5Password = MD5Util.md5(password);
+        String encryptPassword = Sm3Utils.encrypt(password);
         User user = new User();
         user.setUserName(userName);
-        user.setPassword(md5Password);
+        user.setPassword(encryptPassword);
 
         int result = userService.register(user);
         if (result > 0) {
